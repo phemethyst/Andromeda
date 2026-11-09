@@ -22,7 +22,7 @@
 <p>Well, it can't be this easy. This fork plans to very much rework multiple aspects of the Create mod to make them more difficult and have more possibilities for scaling.</p>
 <p>Currently planned reworks include:
     <ul>
-        <li>A change of stress impact and general increase of maximum RPM. (Stress cost will increase 4x for each 2x increase of speed, and maximum RPM will be heavily increased)</li>
+        <li>A change of stress impact and general increase of maximum RPM. (Stress cost will increase 4x for each 2x increase of speed after 128 or 256 RPM, and maximum RPM will be heavily increased)</li>
         <li>A rework of power generation to reflect the increased stress costs. (Water Wheels and Windmills will have the increased generation, at the cost of drawbacks to incentivise moving to non-passive sources of power. The Steam Engine will become harder to maintain, but in exchanged SU output will be heavily increased.)</li>
         <li>Various changes to the machines, as well as more scalable alternatives to them. (Certain pressing recipes will require multiple hits of the press, and the Mechanical Press will get a scaling alternative in the form of the Hydraulic Press.)</li>
 </ul>
