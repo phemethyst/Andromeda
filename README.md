@@ -16,3 +16,14 @@
 <h1></h1>
 <h4 align="center">Find out more about Create on our <a href="https://www.curseforge.com/minecraft/mc-mods/create">Curseforge</a> or <a href="https://modrinth.com/mod/create">Modrinth</a> Page</h4>
 <h4 align="center">Looking for the Fabric port? <a href="https://github.com/Fabricators-of-Create/Create">Find it here</a></h4>
+
+<h1 align="center">ANDROMEDA</h1>
+
+<p>Well, it can't be this easy. This fork plans to very much rework multiple aspects of the Create mod to make them more difficult and have more possibilities for scaling.</p>
+<p>Currently planned reworks include:
+    <ul>
+        <li>A change of stress impact and general increase of maximum RPM. (Stress cost will increase 4x for each 2x increase of speed, and maximum RPM will be heavily increased)</li>
+        <li>A rework of power generation to reflect the increased stress costs. (Water Wheels and Windmills will have the increased generation, at the cost of drawbacks to incentivise moving to non-passive sources of power.)</li>
+        <li>Various changes to the machines, as well as more scalable alternatives to them. (Certain pressing recipes will require multiple hits of the press, and the Mechanical Press will get a scaling alternative in the form of the Hydraulic Press.)</li>
+</ul>
+</p>
