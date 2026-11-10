@@ -9,6 +9,7 @@ public class CKinetics extends ConfigBase {
 	// ANDROMEDA CONFIGS
 	public final ConfigBool disableExponentialStress = b(false, "disableExponentialStress", Comments.disableExponentialStress);
 	public final ConfigFloat exponentialStressGain = f(4, 2, 256, "exponentialStressGain", Comments.exponentialStressGain);
+	public final ConfigFloat exponentialStressCutoff = f(128, 1, 16384, "exponentialStressCutoff", Comments.exponentialStressCutoff);
 
 	public final ConfigBool disableStress = b(false, "disableStress", Comments.disableStress);
 	public final ConfigInt maxBeltLength = i(20, 5, "maxBeltLength", Comments.maxBeltLength);
@@ -78,6 +79,7 @@ public class CKinetics extends ConfigBase {
 		// ANDROMEDA CONFIGS
 		static String disableExponentialStress = "Disable the exponential Stress cost with speed gain.";
 		static String exponentialStressGain = "The multiplier for stress impact when doubling machine speed.";
+		static String exponentialStressCutoff = "At which RPM should the exponential stress gain start.";
 
 		static String maxBeltLength = "Maximum length in blocks of mechanical belts.";
 		static String maxChainConveyorLength = "Maximum length in blocks of chain conveyor connections.";

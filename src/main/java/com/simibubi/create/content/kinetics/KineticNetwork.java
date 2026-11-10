@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.infrastructure.config.AllConfigs;
+
+import net.minecraft.util.Mth;
 
 public class KineticNetwork {
 
@@ -171,7 +174,18 @@ public class KineticNetwork {
 	}
 
 	private static float getStressMultiplierForSpeed(float speed) {
-		return Math.abs(speed);
+		if (AllConfigs.server().kinetics.disableExponentialStress.get()) {
+			return Math.abs(speed);
+		}
+
+		float stressCutoff = AllConfigs.server().kinetics.exponentialStressCutoff.getF();
+		float stressMult = AllConfigs.server().kinetics.exponentialStressGain.getF();
+
+		if (Math.abs(speed) <= stressCutoff) {
+			return Math.abs(speed);
+		}
+
+		return (float)(stressCutoff * Math.pow(stressMult, Mth.log2(Mth.floor(Mth.abs(speed / stressCutoff)))));
 	}
 
 	public int getSize() {
