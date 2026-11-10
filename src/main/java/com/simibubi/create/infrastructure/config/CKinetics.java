@@ -6,12 +6,16 @@ import net.createmod.catnip.config.ConfigBase;
 
 public class CKinetics extends ConfigBase {
 
+	// ANDROMEDA CONFIGS
+	public final ConfigBool disableExponentialStress = b(false, "disableExponentialStress", Comments.disableExponentialStress);
+	public final ConfigFloat exponentialStressGain = f(4, 2, 256, "exponentialStressGain", Comments.exponentialStressGain);
+
 	public final ConfigBool disableStress = b(false, "disableStress", Comments.disableStress);
 	public final ConfigInt maxBeltLength = i(20, 5, "maxBeltLength", Comments.maxBeltLength);
 	public final ConfigInt maxChainConveyorLength = i(32, 5, "maxChainConveyorLength", Comments.maxChainConveyorLength);
 	public final ConfigInt maxChainConveyorConnections = i(4, 1, "maxChainConveyorConnections", Comments.maxChainConveyorConnections);
 	public final ConfigInt crushingDamage = i(4, 0, "crushingDamage", Comments.crushingDamage);
-	public final ConfigInt maxRotationSpeed = i(256, 64, "maxRotationSpeed", Comments.rpm, Comments.maxRotationSpeed);
+	public final ConfigInt maxRotationSpeed = i(16384, 64, 16384, "maxRotationSpeed", Comments.rpm, Comments.maxRotationSpeed);
 	public final ConfigEnum<DeployerAggroSetting> ignoreDeployerAttacks =
 		e(DeployerAggroSetting.CREEPERS, "ignoreDeployerAttacks", Comments.ignoreDeployerAttacks);
 	public final ConfigInt kineticValidationFrequency =
@@ -71,6 +75,10 @@ public class CKinetics extends ConfigBase {
 	}
 
 	private static class Comments {
+		// ANDROMEDA CONFIGS
+		static String disableExponentialStress = "Disable the exponential Stress cost with speed gain.";
+		static String exponentialStressGain = "The multiplier for stress impact when doubling machine speed.";
+
 		static String maxBeltLength = "Maximum length in blocks of mechanical belts.";
 		static String maxChainConveyorLength = "Maximum length in blocks of chain conveyor connections.";
 		static String maxChainConveyorConnections = "Maximum amount of connections each chain conveyor can have.";
