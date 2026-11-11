@@ -473,7 +473,8 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 			.style(GRAY)
 			.forGoggles(tooltip);
 
-		float stressTotal = stressAtBase * Math.abs(getTheoreticalSpeed());
+		// float stressTotal = stressAtBase * Math.abs(getTheoreticalSpeed());
+		float stressTotal = stressAtBase * KineticNetwork.getStressMultiplierForSpeed(getTheoreticalSpeed());
 
 		CreateLang.number(stressTotal)
 			.translate("generic.unit.stress")

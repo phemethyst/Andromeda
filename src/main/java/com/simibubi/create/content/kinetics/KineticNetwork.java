@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.simibubi.create.Create;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 
@@ -173,7 +174,7 @@ public class KineticNetwork {
 		return members.get(be) * getStressMultiplierForSpeed(be.getTheoreticalSpeed());
 	}
 
-	private static float getStressMultiplierForSpeed(float speed) {
+	public static float getStressMultiplierForSpeed(float speed) {
 		if (AllConfigs.server().kinetics.disableExponentialStress.get()) {
 			return Math.abs(speed);
 		}
@@ -185,7 +186,7 @@ public class KineticNetwork {
 			return Math.abs(speed);
 		}
 
-		return (float)(stressCutoff * Math.pow(stressMult, Mth.log2(Mth.floor(Mth.abs(speed / stressCutoff)))));
+		return (float)(stressCutoff * Math.pow(stressMult, Math.log(Math.abs(speed) / stressCutoff)/Math.log(2.0)));
 	}
 
 	public int getSize() {

@@ -16,7 +16,7 @@ public class CKinetics extends ConfigBase {
 	public final ConfigInt maxChainConveyorLength = i(32, 5, "maxChainConveyorLength", Comments.maxChainConveyorLength);
 	public final ConfigInt maxChainConveyorConnections = i(4, 1, "maxChainConveyorConnections", Comments.maxChainConveyorConnections);
 	public final ConfigInt crushingDamage = i(4, 0, "crushingDamage", Comments.crushingDamage);
-	public final ConfigInt maxRotationSpeed = i(16384, 64, 16384, "maxRotationSpeed", Comments.rpm, Comments.maxRotationSpeed);
+	public final ConfigInt maxRotationSpeed = i(4096, 64, 4096, "maxRotationSpeed", Comments.rpm, Comments.maxRotationSpeed);
 	public final ConfigEnum<DeployerAggroSetting> ignoreDeployerAttacks =
 		e(DeployerAggroSetting.CREEPERS, "ignoreDeployerAttacks", Comments.ignoreDeployerAttacks);
 	public final ConfigInt kineticValidationFrequency =

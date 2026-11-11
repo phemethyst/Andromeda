@@ -28,6 +28,13 @@
     </ul>
 </p>
 
+<p>Actually completed reworks include:
+    <ul>
+        <li>Stress impact past 128 RPM grows according to the function a^log2(s/c), where a is the stress multiplier (default = 4), s is the speed and c is the stress cutoff (default = 128)</li>
+        <li>Maximum RPM is by default set to 4096 RPM.</li>
+    </ul>
+</p>
+
 <p>
 ok i have something more to say, Mechanical Presses (at least) function basically the same above 256 RPM (i checked with the full 16K) so i might turn that into parallels
 </p>
