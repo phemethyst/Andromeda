@@ -39,6 +39,7 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 	protected NonNullList<FluidStack> fluidResults;
 	protected int processingDuration;
 	protected HeatCondition requiredHeat;
+	protected int hits;
 
 	private RecipeType<?> type;
 	private RecipeSerializer<?> serializer;
@@ -53,6 +54,8 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 		this.fluidResults = params.fluidResults;
 		this.processingDuration = params.processingDuration;
 		this.requiredHeat = params.requiredHeat;
+		this.hits = params.hits;
+
 		this.type = typeInfo.getType();
 		this.serializer = typeInfo.getSerializer();
 		this.typeInfo = typeInfo;
@@ -70,6 +73,10 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 	}
 
 	protected boolean canSpecifyDuration() {
+		return false;
+	}
+
+	protected boolean canSpecifyHits() {
 		return false;
 	}
 
@@ -110,6 +117,9 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 
 		if (requiredHeat != HeatCondition.NONE && !canRequireHeat())
 			errors.add("Recipe specified a heat condition. Heat conditions have no impact on this type of recipe.");
+
+		if (hits != 1 && !canSpecifyHits())
+			errors.add("Recipe specified an amount of hits. Hits are only for Mechanical Presses.");
 
 		return errors;
 	}
@@ -166,6 +176,10 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 
 	public HeatCondition getRequiredHeat() {
 		return requiredHeat;
+	}
+
+	public int getHits() {
+		return hits;
 	}
 
 	// IRecipe<> paperwork

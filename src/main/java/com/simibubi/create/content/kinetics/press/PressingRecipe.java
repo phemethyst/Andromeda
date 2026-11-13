@@ -49,6 +49,11 @@ public class PressingRecipe extends StandardProcessingRecipe<SingleRecipeInput> 
 	}
 
 	@Override
+	protected boolean canSpecifyHits() {
+		return true;
+	}
+
+	@Override
 	public void addAssemblyIngredients(List<Ingredient> list) {}
 
 	@Override

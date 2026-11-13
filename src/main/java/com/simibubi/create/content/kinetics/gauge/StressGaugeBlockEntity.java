@@ -3,6 +3,7 @@ package com.simibubi.create.content.kinetics.gauge;
 import java.util.List;
 
 import com.simibubi.create.AllBlockEntityTypes;
+import com.simibubi.create.Create;
 import com.simibubi.create.compat.Mods;
 import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.compat.computercraft.ComputerCraftProxy;
@@ -59,6 +60,8 @@ public class StressGaugeBlockEntity extends GaugeBlockEntity {
 
 		if (computerBehaviour.hasAttachedComputer())
 			computerBehaviour.prepareComputerEvent(makeComputerKineticsChangeEvent());
+
+		Create.LOGGER.info("Current: " + currentStress + ", Max: " + maxStress);
 
 		if (!StressImpact.isEnabled())
 			dialTarget = 0;

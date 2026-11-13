@@ -30,6 +30,7 @@ public class ProcessingRecipeParams {
 	protected NonNullList<FluidStack> fluidResults;
 	protected int processingDuration;
 	protected HeatCondition requiredHeat;
+	protected int hits;
 
 	protected ProcessingRecipeParams() {
 		ingredients = NonNullList.create();
@@ -38,6 +39,7 @@ public class ProcessingRecipeParams {
 		fluidResults = NonNullList.create();
 		processingDuration = 0;
 		requiredHeat = HeatCondition.NONE;
+		hits = 1;
 	}
 
 	protected static <P extends ProcessingRecipeParams> MapCodec<P> codec(Supplier<P> factory) {
@@ -49,8 +51,10 @@ public class ProcessingRecipeParams {
 			Codec.INT.optionalFieldOf("processing_time", 0)
 				.forGetter(ProcessingRecipeParams::processingDuration),
 			HeatCondition.CODEC.optionalFieldOf("heat_requirement", HeatCondition.NONE)
-				.forGetter(ProcessingRecipeParams::requiredHeat)
-		).apply(instance, (ingredients, results, processingDuration, requiredHeat) -> {
+				.forGetter(ProcessingRecipeParams::requiredHeat),
+			Codec.INT.optionalFieldOf("hits", 1)
+				.forGetter(ProcessingRecipeParams::hits)
+		).apply(instance, (ingredients, results, processingDuration, requiredHeat, hits) -> {
 			P params = factory.get();
 			ingredients.forEach(either -> either
 				.ifRight(params.ingredients::add)
@@ -60,6 +64,7 @@ public class ProcessingRecipeParams {
 				.ifLeft(params.fluidResults::add));
 			params.processingDuration = processingDuration;
 			params.requiredHeat = requiredHeat;
+			params.hits = hits;
 			return params;
 		}));
 	}
@@ -98,6 +103,10 @@ public class ProcessingRecipeParams {
 		return requiredHeat;
 	}
 
+	protected final int hits() {
+		return hits;
+	}
+
 	protected void encode(RegistryFriendlyByteBuf buffer) {
 		CatnipStreamCodecBuilders.nonNullList(Ingredient.CONTENTS_STREAM_CODEC).encode(buffer, ingredients);
 		CatnipStreamCodecBuilders.nonNullList(SizedFluidIngredient.STREAM_CODEC).encode(buffer, fluidIngredients);
@@ -105,6 +114,7 @@ public class ProcessingRecipeParams {
 		CatnipStreamCodecBuilders.nonNullList(FluidStack.STREAM_CODEC).encode(buffer, fluidResults);
 		ByteBufCodecs.VAR_INT.encode(buffer, processingDuration);
 		HeatCondition.STREAM_CODEC.encode(buffer, requiredHeat);
+		ByteBufCodecs.VAR_INT.encode(buffer, hits);
 	}
 
 	protected void decode(RegistryFriendlyByteBuf buffer) {
@@ -114,5 +124,6 @@ public class ProcessingRecipeParams {
 		fluidResults = CatnipStreamCodecBuilders.nonNullList(FluidStack.STREAM_CODEC).decode(buffer);
 		processingDuration = ByteBufCodecs.VAR_INT.decode(buffer);
 		requiredHeat = HeatCondition.STREAM_CODEC.decode(buffer);
+		hits = ByteBufCodecs.VAR_INT.decode(buffer);
 	}
 }

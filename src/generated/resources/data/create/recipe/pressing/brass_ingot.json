@@ -1,5 +1,6 @@
 {
   "type": "create:pressing",
+  "hits": 4,
   "ingredients": [
     {
       "tag": "c:ingots/brass"

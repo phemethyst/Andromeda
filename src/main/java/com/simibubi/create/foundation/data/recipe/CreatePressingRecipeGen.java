@@ -32,13 +32,13 @@ public final class CreatePressingRecipeGen extends PressingRecipeGen {
 		.output(Items.DIRT_PATH)),
 
 	IRON = create("iron_ingot", b -> b.require(CreateRecipeProvider.I.iron())
-		.output(AllItems.IRON_SHEET.get())),
+		.output(AllItems.IRON_SHEET.get()).hits(2)),
 		GOLD = create("gold_ingot", b -> b.require(CreateRecipeProvider.I.gold())
-			.output(AllItems.GOLDEN_SHEET.get())),
+			.output(AllItems.GOLDEN_SHEET.get()).hits(3)),
 		COPPER = create("copper_ingot", b -> b.require(CreateRecipeProvider.I.copper())
-			.output(AllItems.COPPER_SHEET.get())),
+			.output(AllItems.COPPER_SHEET.get()).hits(2)),
 		BRASS = create("brass_ingot", b -> b.require(CreateRecipeProvider.I.brass())
-			.output(AllItems.BRASS_SHEET.get())),
+			.output(AllItems.BRASS_SHEET.get()).hits(4)),
 
 	CARDBOARD = create("cardboard", b -> b.require(AllItems.PULP)
 		.output(AllItems.CARDBOARD.get())),

@@ -212,6 +212,11 @@ public abstract class ProcessingRecipeBuilder<P extends ProcessingRecipeParams, 
 		return self();
 	}
 
+	public S hits(int hits) {
+		params.hits = hits;
+		return self();
+	}
+
 	//
 
 	public S whenModLoaded(String modid) {

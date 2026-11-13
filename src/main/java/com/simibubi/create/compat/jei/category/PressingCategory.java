@@ -4,11 +4,15 @@ import com.simibubi.create.compat.jei.category.animations.AnimatedPress;
 import com.simibubi.create.content.kinetics.press.PressingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
+import com.simibubi.create.foundation.utility.CreateLang;
+
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -46,6 +50,8 @@ public class PressingCategory extends CreateRecipeCategory<PressingRecipe> {
 		AllGuiTextures.JEI_LONG_ARROW.render(graphics, 52, 54);
 
 		press.draw(graphics, getBackground().getWidth() / 2 - 17, 22);
+		graphics.drawString(Minecraft.getInstance().font, Component.literal(recipe.getHits() + "x"), getBackground().getWidth() / 2 - 8,
+			63, 0xFFFFFF, false);
 	}
 
 }

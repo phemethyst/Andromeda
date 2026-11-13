@@ -1,5 +1,6 @@
 {
   "type": "create:pressing",
+  "hits": 3,
   "ingredients": [
     {
       "tag": "c:ingots/gold"
