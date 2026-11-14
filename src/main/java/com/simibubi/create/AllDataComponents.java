@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.UnaryOperator;
 
+import com.simibubi.create.content.equipment.extendoGrip.ExtendoGripInteractionPacket;
+
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval;
 
@@ -55,6 +57,12 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class AllDataComponents {
 	private static final DeferredRegister.DataComponents DATA_COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Create.ID);
+
+	// ANDROMEDA STUFF
+	public static final DataComponentType<Integer> PRESS_HITS = register(
+			"press_hits",
+			builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT)
+	);
 
 	public static final DataComponentType<Integer> BACKTANK_AIR = register(
 			"banktank_air",

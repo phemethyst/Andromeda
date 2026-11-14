@@ -16,6 +16,7 @@ import com.simibubi.create.content.kinetics.belt.behaviour.TransportedItemStackH
 import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
 import com.simibubi.create.content.kinetics.press.PressingBehaviour.Mode;
 
+import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.world.item.ItemStack;
 
 public class BeltPressingCallbacks {
@@ -37,6 +38,7 @@ public class BeltPressingCallbacks {
 
 	static ProcessingResult whenItemHeld(TransportedItemStack transported, TransportedItemStackHandlerBehaviour handler,
 		PressingBehaviour behaviour) {
+		// HEY THIS IS THE FUNCTION TO CHANGE
 
 		if (behaviour.specifics.getKineticSpeed() == 0)
 			return PASS;
@@ -47,8 +49,10 @@ public class BeltPressingCallbacks {
 
 		behaviour.particleItems.clear();
 		ArrayList<ItemStack> results = new ArrayList<>();
-		if (!behaviour.specifics.tryProcessOnBelt(transported, results, false))
+
+		if (!behaviour.specifics.tryProcessOnBelt(transported, results, false)) {
 			return PASS;
+		}
 
 		boolean bulk = behaviour.specifics.canProcessInBulk() || transported.stack.getCount() == 1;
 

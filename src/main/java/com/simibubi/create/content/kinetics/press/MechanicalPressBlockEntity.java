@@ -3,7 +3,9 @@ package com.simibubi.create.content.kinetics.press;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import com.simibubi.create.AllDataComponents;
 import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
@@ -26,6 +28,9 @@ import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -39,6 +44,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import org.jspecify.annotations.Nullable;
 
 public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implements PressingBehaviourSpecifics {
 
@@ -127,10 +134,13 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 			return true;
 
 		ItemStack itemCreated = ItemStack.EMPTY;
-		pressingBehaviour.particleItems.add(item);
 
-		if (recipe.get().value().getHits() == 1 || hits >= recipe.get().value().getHits()) {
-			hits = 1;
+		if (item.get(AllDataComponents.PRESS_HITS) == null) {
+			item.set(AllDataComponents.PRESS_HITS, 0);
+		}
+
+		if (recipe.get().value().getHits() == 1 || item.get(AllDataComponents.PRESS_HITS) >= recipe.get().value().getHits()) {
+			pressingBehaviour.particleItems.add(item);
 
 			if (canProcessInBulk() || item.getCount() == 1) {
 				RecipeApplier.applyRecipeOn(itemEntity, recipe.get().value(), true);
@@ -141,6 +151,7 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 					recipe.get().value(), true)) {
 					if (itemCreated.isEmpty())
 						itemCreated = result.copy();
+
 					ItemEntity created =
 						new ItemEntity(level, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), result);
 					created.setDefaultPickUpDelay();
@@ -150,7 +161,21 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 				item.shrink(1);
 			}
 		} else {
-			hits++;
+			ItemEntity created =
+				new ItemEntity(level, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), item.copyWithCount(1));
+			created.setDefaultPickUpDelay();
+			created.setDeltaMovement(VecHelper.offsetRandomly(Vec3.ZERO, level.random, .05f));
+			level.addFreshEntity(created);
+
+			ItemStack newResult = created.getItem();
+
+			newResult.set(AllDataComponents.PRESS_HITS, item.getOrDefault(AllDataComponents.PRESS_HITS, 0) + 1);
+
+			pressingBehaviour.particleItems.add(newResult);
+
+			itemCreated = newResult;
+
+			item.shrink(1);
 		}
 
 
@@ -176,7 +201,7 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 			outputs = RecipeApplier.applyRecipeOn(level,
 				canProcessInBulk() ? input.stack : input.stack.copyWithCount(1), recipe.get().value(), true);
 		} else {
-			outputs.add(new ItemStack(Items.AIR, 1));
+			outputs.add(input.stack);
 			hits++;
 
 			outputList.addAll(outputs);
