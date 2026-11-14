@@ -54,8 +54,6 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 	public PressingBehaviour pressingBehaviour;
 	private int tracksCreated;
 
-	private int hits = 1;
-
 	public MechanicalPressBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 	}
@@ -114,14 +112,12 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 		super.write(compound, registries, clientPacket);
 		if (getBehaviour(AdvancementBehaviour.TYPE).isOwnerPresent())
 			compound.putInt("TracksCreated", tracksCreated);
-		compound.putInt("Hits", hits);
 	}
 
 	@Override
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(compound, registries, clientPacket);
 		tracksCreated = compound.getInt("TracksCreated");
-		hits = compound.getInt("Hits");
 	}
 
 	@Override
@@ -195,6 +191,7 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 
 		List<ItemStack> outputs = new LinkedList<>();
 
+		/*
 		if (recipe.get().value().getHits() == 1 || hits >= recipe.get().value().getHits()) {
 			hits = 1;
 
@@ -215,6 +212,8 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 				break;
 			}
 		}
+
+		 */
 
 		outputList.addAll(outputs);
 		return true;
