@@ -61,8 +61,6 @@ public class StressGaugeBlockEntity extends GaugeBlockEntity {
 		if (computerBehaviour.hasAttachedComputer())
 			computerBehaviour.prepareComputerEvent(makeComputerKineticsChangeEvent());
 
-		Create.LOGGER.info("Current: " + currentStress + ", Max: " + maxStress);
-
 		if (!StressImpact.isEnabled())
 			dialTarget = 0;
 		else if (isOverStressed())

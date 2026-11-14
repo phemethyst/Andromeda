@@ -4,6 +4,7 @@ import static com.simibubi.create.content.kinetics.belt.behaviour.BeltProcessing
 import static com.simibubi.create.content.kinetics.belt.behaviour.BeltProcessingBehaviour.ProcessingResult.PASS;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,8 +26,10 @@ public class BeltPressingCallbacks {
 			return PASS;
 		if (behaviour.running)
 			return HOLD;
-		if (!behaviour.specifics.tryProcessOnBelt(transported, null, true))
+
+		if (!behaviour.specifics.tryProcessOnBelt(transported, null, true)) {
 			return PASS;
+		}
 
 		behaviour.start(Mode.BELT);
 		return HOLD;
@@ -50,7 +53,7 @@ public class BeltPressingCallbacks {
 		boolean bulk = behaviour.specifics.canProcessInBulk() || transported.stack.getCount() == 1;
 
 		transported.clearFanProcessingData();
-		
+
 		List<TransportedItemStack> collect = results.stream()
 			.map(stack -> {
 				TransportedItemStack copy = transported.copy();

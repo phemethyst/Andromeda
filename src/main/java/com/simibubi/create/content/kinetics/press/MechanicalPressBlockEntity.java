@@ -1,5 +1,6 @@
 package com.simibubi.create.content.kinetics.press;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -44,6 +46,8 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 
 	public PressingBehaviour pressingBehaviour;
 	private int tracksCreated;
+
+	private int hits = 1;
 
 	public MechanicalPressBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -103,12 +107,14 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 		super.write(compound, registries, clientPacket);
 		if (getBehaviour(AdvancementBehaviour.TYPE).isOwnerPresent())
 			compound.putInt("TracksCreated", tracksCreated);
+		compound.putInt("Hits", hits);
 	}
 
 	@Override
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(compound, registries, clientPacket);
 		tracksCreated = compound.getInt("TracksCreated");
+		hits = compound.getInt("Hits");
 	}
 
 	@Override
@@ -122,23 +128,31 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 
 		ItemStack itemCreated = ItemStack.EMPTY;
 		pressingBehaviour.particleItems.add(item);
-		if (canProcessInBulk() || item.getCount() == 1) {
-			RecipeApplier.applyRecipeOn(itemEntity, recipe.get().value(), true);
-			itemCreated = itemEntity.getItem()
-				.copy();
-		} else {
-			for (ItemStack result : RecipeApplier.applyRecipeOn(level, item.copyWithCount(1),
-				recipe.get().value(), true)) {
-				if (itemCreated.isEmpty())
-					itemCreated = result.copy();
-				ItemEntity created =
-					new ItemEntity(level, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), result);
-				created.setDefaultPickUpDelay();
-				created.setDeltaMovement(VecHelper.offsetRandomly(Vec3.ZERO, level.random, .05f));
-				level.addFreshEntity(created);
+
+		if (recipe.get().value().getHits() == 1 || hits >= recipe.get().value().getHits()) {
+			hits = 1;
+
+			if (canProcessInBulk() || item.getCount() == 1) {
+				RecipeApplier.applyRecipeOn(itemEntity, recipe.get().value(), true);
+				itemCreated = itemEntity.getItem()
+					.copy();
+			} else {
+				for (ItemStack result : RecipeApplier.applyRecipeOn(level, item.copyWithCount(1),
+					recipe.get().value(), true)) {
+					if (itemCreated.isEmpty())
+						itemCreated = result.copy();
+					ItemEntity created =
+						new ItemEntity(level, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), result);
+					created.setDefaultPickUpDelay();
+					created.setDeltaMovement(VecHelper.offsetRandomly(Vec3.ZERO, level.random, .05f));
+					level.addFreshEntity(created);
+				}
+				item.shrink(1);
 			}
-			item.shrink(1);
+		} else {
+			hits++;
 		}
+
 
 		if (!itemCreated.isEmpty())
 			onItemPressed(itemCreated);
@@ -153,8 +167,22 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 		if (simulate)
 			return true;
 		pressingBehaviour.particleItems.add(input.stack);
-		List<ItemStack> outputs = RecipeApplier.applyRecipeOn(level,
-			canProcessInBulk() ? input.stack : input.stack.copyWithCount(1), recipe.get().value(), true);
+
+		List<ItemStack> outputs = new LinkedList<>();
+
+		if (recipe.get().value().getHits() == 1 || hits >= recipe.get().value().getHits()) {
+			hits = 1;
+
+			outputs = RecipeApplier.applyRecipeOn(level,
+				canProcessInBulk() ? input.stack : input.stack.copyWithCount(1), recipe.get().value(), true);
+		} else {
+			outputs.add(new ItemStack(Items.AIR, 1));
+			hits++;
+
+			outputList.addAll(outputs);
+			return false;
+		}
+
 
 		for (ItemStack created : outputs) {
 			if (!created.isEmpty()) {
