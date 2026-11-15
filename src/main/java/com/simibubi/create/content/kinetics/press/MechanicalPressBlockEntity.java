@@ -132,7 +132,7 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 		ItemStack itemCreated = ItemStack.EMPTY;
 
 		if (item.get(AllDataComponents.PRESS_HITS) == null) {
-			item.set(AllDataComponents.PRESS_HITS, 0);
+			item.set(AllDataComponents.PRESS_HITS, 1);
 		}
 
 		if (recipe.get().value().getHits() == 1 || item.get(AllDataComponents.PRESS_HITS) >= recipe.get().value().getHits()) {
@@ -165,7 +165,7 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 
 			ItemStack newResult = created.getItem();
 
-			newResult.set(AllDataComponents.PRESS_HITS, item.getOrDefault(AllDataComponents.PRESS_HITS, 0) + 1);
+			newResult.set(AllDataComponents.PRESS_HITS, item.getOrDefault(AllDataComponents.PRESS_HITS, 1) + 1);
 
 			pressingBehaviour.particleItems.add(newResult);
 
@@ -187,24 +187,25 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 			return false;
 		if (simulate)
 			return true;
-		pressingBehaviour.particleItems.add(input.stack);
 
 		List<ItemStack> outputs = new LinkedList<>();
 
-		/*
-		if (recipe.get().value().getHits() == 1 || hits >= recipe.get().value().getHits()) {
-			hits = 1;
+		if (recipe.get().value().getHits() == 1 || input.stack.getOrDefault(AllDataComponents.PRESS_HITS, 0) >= recipe.get().value().getHits()) {
+			pressingBehaviour.particleItems.add(input.stack);
 
 			outputs = RecipeApplier.applyRecipeOn(level,
 				canProcessInBulk() ? input.stack : input.stack.copyWithCount(1), recipe.get().value(), true);
 		} else {
-			outputs.add(input.stack);
-			hits++;
+			RecipeApplier.applyRecipeOn(level,
+				canProcessInBulk() ? input.stack : input.stack.copyWithCount(1), recipe.get().value(), true);
 
-			outputList.addAll(outputs);
-			return false;
+			ItemStack out = input.stack.copyWithCount(1);
+			out.set(AllDataComponents.PRESS_HITS, out.getOrDefault(AllDataComponents.PRESS_HITS, 1) + 1);
+
+			outputs.add(out);
+
+			pressingBehaviour.particleItems.add(outputs.getFirst());
 		}
-
 
 		for (ItemStack created : outputs) {
 			if (!created.isEmpty()) {
@@ -212,8 +213,6 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 				break;
 			}
 		}
-
-		 */
 
 		outputList.addAll(outputs);
 		return true;
