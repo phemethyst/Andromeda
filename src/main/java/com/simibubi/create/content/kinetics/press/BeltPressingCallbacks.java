@@ -54,7 +54,7 @@ public class BeltPressingCallbacks {
 			return PASS;
 		}
 
-		boolean bulk = behaviour.specifics.canProcessInBulk() || transported.stack.getCount() == 1;
+		boolean bulk = transported.stack.getCount() == 1;
 
 		transported.clearFanProcessingData();
 

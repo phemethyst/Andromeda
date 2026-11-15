@@ -3037,6 +3037,7 @@
   "create.tooltip.holdForDescription": "Hold [%1$s] for Summary",
   "create.tooltip.keyCtrl": "Ctrl",
   "create.tooltip.keyShift": "Shift",
+  "create.tooltip.parallels": "Machine Parallels:",
   "create.tooltip.speedRequirement": "Speed Requirement:",
   "create.tooltip.speedRequirement.fast": "Fast",
   "create.tooltip.speedRequirement.medium": "Moderate",

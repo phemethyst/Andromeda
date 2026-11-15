@@ -175,12 +175,12 @@ public class KineticNetwork {
 	}
 
 	public static float getStressMultiplierForSpeed(float speed) {
-		if (AllConfigs.server().kinetics.disableExponentialStress.get()) {
+		if (AllConfigs.server().andromeda.disableExponentialStress.get()) {
 			return Math.abs(speed);
 		}
 
-		float stressCutoff = AllConfigs.server().kinetics.exponentialStressCutoff.getF();
-		float stressMult = AllConfigs.server().kinetics.exponentialStressGain.getF();
+		float stressCutoff = AllConfigs.server().andromeda.exponentialStressCutoff.getF();
+		float stressMult = AllConfigs.server().andromeda.exponentialStressGain.getF();
 
 		if (Math.abs(speed) <= stressCutoff) {
 			return Math.abs(speed);

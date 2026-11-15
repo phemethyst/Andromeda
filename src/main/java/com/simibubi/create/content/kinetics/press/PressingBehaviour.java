@@ -11,6 +11,8 @@ import com.simibubi.create.content.processing.basin.BasinBlock;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
+import com.tterrag.registrate.util.entry.ItemEntry;
+
 import net.createmod.catnip.nbt.NBTHelper;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
@@ -50,8 +52,6 @@ public class PressingBehaviour extends BeltProcessingBehaviour {
 		public boolean tryProcessOnBelt(TransportedItemStack input, List<ItemStack> outputList, boolean simulate);
 
 		public boolean tryProcessInWorld(ItemEntity itemEntity, boolean simulate);
-
-		public boolean canProcessInBulk();
 
 		public void onPressingCompleted();
 
@@ -217,24 +217,20 @@ public class PressingBehaviour extends BeltProcessingBehaviour {
 		Level level = getWorld();
 		BlockPos worldPosition = getPos();
 		AABB bb = new AABB(worldPosition.below(1));
-		boolean bulk = specifics.canProcessInBulk();
 
 		particleItems.clear();
 
 		if (level.isClientSide)
 			return;
 
-		for (Entity entity : level.getEntities(null, bb)) {
-			if (!(entity instanceof ItemEntity itemEntity))
-				continue;
-			if (!entity.isAlive() || !entity.onGround())
-				continue;
+		Entity entity = level.getEntities(null, bb).getFirst();
 
-			entityScanCooldown = 0;
-			if (specifics.tryProcessInWorld(itemEntity, false))
-				blockEntity.sendData();
-			if (!bulk)
-				break;
+		if (entity instanceof ItemEntity itemEntity) {
+			if (entity.isAlive() && entity.onGround()) {
+				entityScanCooldown = 0;
+				if (specifics.tryProcessInWorld(itemEntity, false))
+					blockEntity.sendData();
+			}
 		}
 	}
 

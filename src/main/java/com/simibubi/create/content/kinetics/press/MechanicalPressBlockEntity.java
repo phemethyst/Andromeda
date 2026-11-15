@@ -32,6 +32,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -131,49 +132,66 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 
 		ItemStack itemCreated = ItemStack.EMPTY;
 
-		if (item.get(AllDataComponents.PRESS_HITS) == null) {
-			item.set(AllDataComponents.PRESS_HITS, 1);
+		if (!AllConfigs.server().andromeda.pressChanges.get()) {
+			for (ItemStack result : RecipeApplier.applyRecipeOn(level, item.copyWithCount(1),
+				recipe.get().value(), true)) {
+				if (itemCreated.isEmpty())
+					itemCreated = result.copy();
+
+				ItemEntity created =
+					new ItemEntity(level, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), result.copyWithCount(1));
+				created.setDefaultPickUpDelay();
+				created.setDeltaMovement(VecHelper.offsetRandomly(Vec3.ZERO, level.random, .05f));
+				level.addFreshEntity(created);
+
+				pressingBehaviour.particleItems.add(result);
+			}
+
+			if (!itemCreated.isEmpty())
+				onItemPressed(itemCreated);
+			return true;
 		}
 
-		if (recipe.get().value().getHits() == 1 || item.get(AllDataComponents.PRESS_HITS) >= recipe.get().value().getHits()) {
-			pressingBehaviour.particleItems.add(item);
+		int size = item.getCount();
+		int bonks = recipe.get().value().getHits();
+		int parallels = Math.min(getParallels(), size * bonks);
 
-			if (canProcessInBulk() || item.getCount() == 1) {
-				RecipeApplier.applyRecipeOn(itemEntity, recipe.get().value(), true);
-				itemCreated = itemEntity.getItem()
-					.copy();
-			} else {
-				for (ItemStack result : RecipeApplier.applyRecipeOn(level, item.copyWithCount(1),
-					recipe.get().value(), true)) {
-					if (itemCreated.isEmpty())
-						itemCreated = result.copy();
+		int leftover = parallels % bonks;
+		int processedItems = (parallels - leftover) / bonks;
 
-					ItemEntity created =
-						new ItemEntity(level, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), result);
-					created.setDefaultPickUpDelay();
-					created.setDeltaMovement(VecHelper.offsetRandomly(Vec3.ZERO, level.random, .05f));
-					level.addFreshEntity(created);
-				}
-				item.shrink(1);
+		if (processedItems != 0) {
+			for (ItemStack result : RecipeApplier.applyRecipeOn(level, item.copyWithCount(1),
+				recipe.get().value(), true)) {
+				if (itemCreated.isEmpty())
+					itemCreated = result.copy();
+
+				ItemEntity created =
+					new ItemEntity(level, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), result.copyWithCount(processedItems));
+				created.setDefaultPickUpDelay();
+				created.setDeltaMovement(VecHelper.offsetRandomly(Vec3.ZERO, level.random, .05f));
+				level.addFreshEntity(created);
+
+				pressingBehaviour.particleItems.add(result);
 			}
-		} else {
+
+			item.shrink(processedItems);
+		}
+
+		if (leftover != 0) {
 			ItemEntity created =
 				new ItemEntity(level, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), item.copyWithCount(1));
 			created.setDefaultPickUpDelay();
 			created.setDeltaMovement(VecHelper.offsetRandomly(Vec3.ZERO, level.random, .05f));
 			level.addFreshEntity(created);
 
-			ItemStack newResult = created.getItem();
+			created.getItem().set(AllDataComponents.PRESS_HITS, created.getItem().getOrDefault(AllDataComponents.PRESS_HITS, 0) + leftover);
 
-			newResult.set(AllDataComponents.PRESS_HITS, item.getOrDefault(AllDataComponents.PRESS_HITS, 1) + 1);
+			itemCreated = item.copyWithCount(1);
 
-			pressingBehaviour.particleItems.add(newResult);
-
-			itemCreated = newResult;
+			pressingBehaviour.particleItems.add(created.getItem());
 
 			item.shrink(1);
 		}
-
 
 		if (!itemCreated.isEmpty())
 			onItemPressed(itemCreated);
@@ -183,6 +201,7 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 	@Override
 	public boolean tryProcessOnBelt(TransportedItemStack input, List<ItemStack> outputList, boolean simulate) {
 		Optional<RecipeHolder<PressingRecipe>> recipe = getRecipe(input.stack);
+		ItemStack item = input.stack;
 		if (!recipe.isPresent())
 			return false;
 		if (simulate)
@@ -190,17 +209,45 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 
 		List<ItemStack> outputs = new LinkedList<>();
 
-		if (recipe.get().value().getHits() == 1 || input.stack.getOrDefault(AllDataComponents.PRESS_HITS, 0) >= recipe.get().value().getHits()) {
+		if (!AllConfigs.server().andromeda.pressChanges.get()) {
 			pressingBehaviour.particleItems.add(input.stack);
 
 			outputs = RecipeApplier.applyRecipeOn(level,
-				canProcessInBulk() ? input.stack : input.stack.copyWithCount(1), recipe.get().value(), true);
-		} else {
+				input.stack.copyWithCount(1), recipe.get().value(), true);
+
+			for (ItemStack created : outputs) {
+				if (!created.isEmpty()) {
+					onItemPressed(created);
+					break;
+				}
+			}
+
+			outputList.addAll(outputs);
+			return true;
+		}
+
+		int size = item.getCount();
+		int bonks = recipe.get().value().getHits();
+		int parallels = Math.min(getParallels(), size * bonks);
+
+		int leftover = parallels % bonks;
+		int processedItems = (parallels - leftover) / bonks;
+
+		if (processedItems != 0) {
+			outputs = RecipeApplier.applyRecipeOn(level,
+				input.stack.copyWithCount(processedItems), recipe.get().value(), true);
+
+			pressingBehaviour.particleItems.add(outputs.getFirst());
+
+			item.shrink(processedItems - 1);
+		}
+
+		if (leftover != 0) {
 			RecipeApplier.applyRecipeOn(level,
-				canProcessInBulk() ? input.stack : input.stack.copyWithCount(1), recipe.get().value(), true);
+				input.stack.copyWithCount(1), recipe.get().value(), true);
 
 			ItemStack out = input.stack.copyWithCount(1);
-			out.set(AllDataComponents.PRESS_HITS, out.getOrDefault(AllDataComponents.PRESS_HITS, 1) + 1);
+			out.set(AllDataComponents.PRESS_HITS, out.getOrDefault(AllDataComponents.PRESS_HITS, 0) + leftover);
 
 			outputs.add(out);
 
@@ -254,11 +301,6 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 	@Override
 	public float getKineticSpeed() {
 		return getSpeed();
-	}
-
-	@Override
-	public boolean canProcessInBulk() {
-		return AllConfigs.server().recipes.bulkPressing.get();
 	}
 
 	@Override

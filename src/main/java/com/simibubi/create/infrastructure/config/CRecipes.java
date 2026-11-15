@@ -4,7 +4,6 @@ import net.createmod.catnip.config.ConfigBase;
 
 public class CRecipes extends ConfigBase {
 
-	public final ConfigBool bulkPressing = b(false, "bulkPressing", Comments.bulkPressing);
 	public final ConfigBool bulkCutting = b(false, "bulkCutting", Comments.bulkCutting);
 	public final ConfigBool allowBrewingInMixer = b(true, "allowBrewingInMixer", Comments.allowBrewingInMixer);
 	public final ConfigBool allowShapelessInMixer = b(true, "allowShapelessInMixer", Comments.allowShapelessInMixer);
@@ -28,7 +27,6 @@ public class CRecipes extends ConfigBase {
 	}
 
 	private static class Comments {
-		static String bulkPressing = "Allow the Mechanical Press to process entire stacks at a time.";
 		static String bulkCutting = "Allow the Mechanical Saw to process entire stacks at a time.";
 		static String allowBrewingInMixer = "Allow supported potions to be brewed by a Mechanical Mixer + Basin.";
 		static String allowShapelessInMixer =

@@ -50,8 +50,10 @@ public class PressingCategory extends CreateRecipeCategory<PressingRecipe> {
 		AllGuiTextures.JEI_LONG_ARROW.render(graphics, 52, 54);
 
 		press.draw(graphics, getBackground().getWidth() / 2 - 17, 22);
-		graphics.drawString(Minecraft.getInstance().font, Component.literal(recipe.getHits() + "x"), getBackground().getWidth() / 2 - 8,
-			63, 0xFFFFFF, false);
+		if (recipe.getHits() != 1) {
+			graphics.drawString(Minecraft.getInstance().font, Component.literal(recipe.getHits() + "x"), getBackground().getWidth() / 2 - 8,
+				63, 0xFFFFFF, false);
+		}
 	}
 
 }

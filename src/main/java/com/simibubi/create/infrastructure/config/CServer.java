@@ -15,6 +15,7 @@ public class CServer extends ConfigBase {
 	public final CSchematics schematics = nested(0, CSchematics::new, Comments.schematics);
 	public final CEquipment equipment = nested(0, CEquipment::new, Comments.equipment);
 	public final CTrains trains = nested(0, CTrains::new, Comments.trains);
+	public final CAndromeda andromeda = nested(1, CAndromeda::new, Comments.andromeda);
 
 	@Override
 	public String getName() {
@@ -22,6 +23,7 @@ public class CServer extends ConfigBase {
 	}
 
 	private static class Comments {
+		static String andromeda = "Andromeda's bits and bobs.";
 		static String recipes = "Packmakers' control panel for internal recipe compat";
 		static String schematics = "Everything related to Schematic tools";
 		static String kinetics = "Parameters and abilities of Create's kinetic mechanisms";

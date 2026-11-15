@@ -6,6 +6,17 @@ import static net.minecraft.ChatFormatting.GRAY;
 import java.util.List;
 import java.util.Objects;
 
+import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
+import com.simibubi.create.content.kinetics.chainDrive.ChainGearshiftBlockEntity;
+import com.simibubi.create.content.kinetics.gearbox.GearboxBlockEntity;
+import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
+import com.simibubi.create.content.kinetics.press.MechanicalPressBlock;
+import com.simibubi.create.content.kinetics.press.MechanicalPressBlockEntity;
+
+import com.simibubi.create.content.kinetics.simpleRelays.CogWheelBlock;
+import com.simibubi.create.content.kinetics.simpleRelays.SimpleKineticBlockEntity;
+import com.simibubi.create.content.processing.basin.BasinOperatingBlockEntity;
+
 import org.jetbrains.annotations.Nullable;
 
 import com.simibubi.create.Create;
@@ -74,12 +85,15 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 	protected float lastStressApplied;
 	protected float lastCapacityProvided;
 
+	private int parallels;
+
 	public SequenceContext sequenceContext;
 
 	public KineticBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
 		super(typeIn, pos, state);
 		effects = new KineticEffectHandler(this);
 		updateSpeed = true;
+		parallels = 1;
 	}
 
 	@Override
@@ -193,6 +207,14 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 		boolean directionSwap = !fromOrToZero && Math.signum(previousSpeed) != Math.signum(getSpeed());
 		if (fromOrToZero || directionSwap)
 			flickerTally = getFlickerScore() + 5;
+
+		if (Mth.abs(getSpeed()) <= AllConfigs.server().andromeda.parallelCutoff.getF() || !AllConfigs.server().andromeda.machineParallels.get()) {
+			parallels = 1;
+		} else {
+			parallels = Mth.abs(Mth.floor(getSpeed() / AllConfigs.server().andromeda.parallelCutoff.getF()))
+				* AllConfigs.server().andromeda.parallelMultiplier.get();
+		}
+
 		setChanged();
 	}
 
@@ -209,6 +231,7 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 	@Override
 	protected void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		compound.putFloat("Speed", speed);
+		compound.putInt("Parallels", parallels);
 		if (sequenceContext != null && (!clientPacket || syncSequenceContext()))
 			compound.put("Sequence", sequenceContext.serializeNBT());
 
@@ -252,6 +275,7 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 		}
 
 		speed = compound.getFloat("Speed");
+		parallels = compound.getInt("Parallels");
 		sequenceContext = SequenceContext.fromNBT(compound.getCompound("Sequence"));
 
 		source = null;
@@ -298,6 +322,10 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 
 	public void setSpeed(float speed) {
 		this.speed = speed;
+	}
+
+	public int getParallels() {
+		return parallels;
 	}
 
 	public boolean hasSource() {
@@ -453,6 +481,19 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+		if (this instanceof MechanicalPressBlockEntity && AllConfigs.server().andromeda.machineParallels.get()) Create.LOGGER.info("meow: " + getParallels());
+		boolean out = stressTooltip(tooltip);
+
+		if (AllConfigs.server().andromeda.machineParallels.get()) {
+			if (this instanceof MechanicalPressBlockEntity) {
+				addParallelStats(tooltip, getParallels());
+			}
+		}
+
+		return out;
+	}
+
+	protected boolean stressTooltip(List<Component> tooltip) {
 		if (!StressImpact.isEnabled())
 			return false;
 		float stressAtBase = calculateStressApplied();
@@ -465,8 +506,8 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 		addStressImpactStats(tooltip, stressAtBase);
 
 		return true;
-
 	}
+
 
 	protected void addStressImpactStats(List<Component> tooltip, float stressAtBase) {
 		CreateLang.translate("tooltip.stressImpact")
@@ -478,6 +519,20 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 
 		CreateLang.number(stressTotal)
 			.translate("generic.unit.stress")
+			.style(ChatFormatting.AQUA)
+			.space()
+			.add(CreateLang.translate("gui.goggles.at_current_speed")
+				.style(ChatFormatting.DARK_GRAY))
+			.forGoggles(tooltip, 1);
+	}
+
+	protected void addParallelStats(List<Component> tooltip, int p) {
+		CreateLang.translate("tooltip.parallels")
+			.style(ChatFormatting.LIGHT_PURPLE)
+			.forGoggles(tooltip);
+
+		CreateLang.number(p)
+			.add(Component.literal("x"))
 			.style(ChatFormatting.AQUA)
 			.space()
 			.add(CreateLang.translate("gui.goggles.at_current_speed")
