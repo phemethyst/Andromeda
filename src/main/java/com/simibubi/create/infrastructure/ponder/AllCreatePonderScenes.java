@@ -71,6 +71,9 @@ public class AllCreatePonderScenes {
 	public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
 		PonderSceneRegistrationHelper<ItemProviderEntry<?, ?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
 
+		HELPER.forComponents(AllBlocks.MECHANICAL_PRESS)
+				.addStoryBoard("mechanical_press/parallels", KineticsScenes::machineParallels, AllCreatePonderTags.KINETIC_RELAYS);
+
 		HELPER.forComponents(AllBlocks.SHAFT)
 			.addStoryBoard("shaft/relay", KineticsScenes::shaftAsRelay, AllCreatePonderTags.KINETIC_RELAYS);
 		HELPER.forComponents(AllBlocks.SHAFT, AllBlocks.ANDESITE_ENCASED_SHAFT, AllBlocks.BRASS_ENCASED_SHAFT)

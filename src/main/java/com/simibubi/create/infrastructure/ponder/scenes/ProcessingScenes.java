@@ -321,10 +321,20 @@ public class ProcessingScenes {
 		scene.idle(30);
 		scene.world().modifyBlockEntity(pressPos, type, pte -> pte.getPressingBehaviour()
 			.makePressingParticleEffect(depotCenter.add(0, 8 / 16f, 0), copper));
+		scene.idle(30);
+		scene.world().modifyBlockEntity(pressPos, type, pte -> pte.getPressingBehaviour()
+			.start(Mode.BELT));
+		scene.idle(30);
+		scene.world().modifyBlockEntity(pressPos, type, pte -> pte.getPressingBehaviour()
+			.makePressingParticleEffect(depotCenter.add(0, 8 / 16f, 0), copper));
 		scene.world().removeItemsFromBelt(depotPos);
 		ItemStack sheet = AllItems.COPPER_SHEET.asStack();
 		scene.world().createItemOnBeltLike(depotPos, Direction.UP, sheet);
-		scene.idle(10);
+		scene.overlay().showText(60)
+			.pointAt(pressSide.subtract(0, 2, 0))
+			.placeNearTarget()
+			.text("The Press may need multiple hits to fully process an item");
+		scene.idle(50);
 		scene.overlay().showControls(depotCenter, Pointing.UP, 50).withItem(sheet);
 		scene.idle(60);
 

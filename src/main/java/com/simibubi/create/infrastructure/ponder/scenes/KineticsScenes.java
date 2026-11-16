@@ -6,6 +6,8 @@ import com.simibubi.create.content.kinetics.crank.ValveHandleBlock;
 import com.simibubi.create.content.kinetics.crusher.CrushingWheelBlock;
 import com.simibubi.create.content.kinetics.gauge.GaugeBlock;
 import com.simibubi.create.content.kinetics.gauge.StressGaugeBlockEntity;
+import com.simibubi.create.content.kinetics.press.MechanicalPressBlockEntity;
+import com.simibubi.create.content.kinetics.press.PressingBehaviour.Mode;
 import com.simibubi.create.content.kinetics.simpleRelays.CogWheelBlock;
 import com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock;
 import com.simibubi.create.content.kinetics.simpleRelays.encased.EncasedCogwheelBlock;
@@ -29,6 +31,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.RedStoneWireBlock;
@@ -37,6 +40,71 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class KineticsScenes {
+	public static void machineParallels(SceneBuilder builder, SceneBuildingUtil util) {
+		CreateSceneBuilder scene = new CreateSceneBuilder(builder);
+		scene.title("parallel", "Machine Parallels");
+		scene.configureBasePlate(0, 0, 5);
+		scene.world().showSection(util.select().layer(0), Direction.UP);
+
+		ElementLink<WorldSectionElement> depot =
+			scene.world().showIndependentSection(util.select().position(2, 1, 1), Direction.DOWN);
+		scene.world().moveSection(depot, util.vector().of(0, 0, 1), 0);
+		scene.idle(10);
+
+		Selection pressS = util.select().position(2, 3, 2);
+		Selection yes = util.select().everywhere();
+		Selection thatOneCog = util.select().layer(2);
+
+		BlockPos pressPos = util.grid().at(2, 3, 2);
+		BlockPos depotPos = util.grid().at(2, 1, 1);
+		scene.world().setKineticSpeed(pressS, 0);
+		scene.world().showSection(pressS, Direction.DOWN);
+		scene.idle(10);
+
+		scene.world().showSection(util.select().fromTo(2, 1, 3, 2, 1, 5), Direction.NORTH);
+		scene.idle(3);
+		scene.world().showSection(util.select().position(2, 2, 3), Direction.SOUTH);
+		scene.idle(3);
+		scene.world().showSection(util.select().position(2, 3, 3), Direction.NORTH);
+		scene.world().setKineticSpeed(pressS, -32);
+		scene.effects().indicateSuccess(pressPos);
+		scene.idle(10);
+
+		Vec3 pressSide = util.vector().blockSurface(pressPos, Direction.WEST);
+		scene.overlay().showText(60)
+			.pointAt(pressSide.subtract(0, 2, 0))
+			.placeNearTarget()
+			.attachKeyFrame()
+			.text("Machine Parallels are a way to process more items at once with your machines");
+		scene.idle(80);
+
+		scene.world().setKineticSpeed(yes, 128);
+		scene.world().setKineticSpeed(thatOneCog, -128);
+		scene.overlay().showText(60)
+			.pointAt(pressSide.subtract(0, 2, 0))
+			.placeNearTarget()
+			.text("To get more parallels, you simply have to make your machine faster");
+		scene.idle(100);
+
+		scene.addKeyframe();
+		ItemStack pulp = new ItemStack(AllItems.PULP.get(), 4);
+		scene.world().createItemOnBeltLike(depotPos, Direction.NORTH, pulp);
+
+		Vec3 depotCenter = util.vector().centerOf(depotPos.south());
+		scene.overlay().showControls(depotCenter, Pointing.UP, 30).withItem(pulp);
+		scene.idle(10);
+
+		Class<MechanicalPressBlockEntity> type = MechanicalPressBlockEntity.class;
+		scene.world().modifyBlockEntity(pressPos, type, pte -> pte.getPressingBehaviour()
+			.start(Mode.BELT));
+		scene.idle(8);
+		scene.world().modifyBlockEntity(pressPos, type, pte -> pte.getPressingBehaviour()
+			.makePressingParticleEffect(depotCenter.add(0, 8 / 16f, 0), pulp));
+		scene.world().removeItemsFromBelt(depotPos);
+		ItemStack cardboard = new ItemStack(AllItems.CARDBOARD.get(), 4);
+		scene.world().createItemOnBeltLike(depotPos, Direction.UP, cardboard);
+	}
+
 
 	public static void shaftAsRelay(SceneBuilder builder, SceneBuildingUtil util) {
 		CreateSceneBuilder scene = new CreateSceneBuilder(builder);
