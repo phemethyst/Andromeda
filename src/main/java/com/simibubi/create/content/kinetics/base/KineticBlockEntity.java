@@ -9,6 +9,7 @@ import java.util.Objects;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.content.kinetics.chainDrive.ChainGearshiftBlockEntity;
 import com.simibubi.create.content.kinetics.gearbox.GearboxBlockEntity;
+import com.simibubi.create.content.kinetics.mixer.MechanicalMixerBlockEntity;
 import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
 import com.simibubi.create.content.kinetics.press.MechanicalPressBlock;
 import com.simibubi.create.content.kinetics.press.MechanicalPressBlockEntity;
@@ -79,13 +80,13 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 	protected boolean overStressed;
 	protected boolean wasMoved;
 
-	private int flickerTally;
+	protected int flickerTally;
 	private int networkSize;
 	private int validationCountdown;
 	protected float lastStressApplied;
 	protected float lastCapacityProvided;
 
-	private int parallels;
+	protected int parallels;
 
 	public SequenceContext sequenceContext;
 
@@ -481,12 +482,14 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-		if (this instanceof MechanicalPressBlockEntity && AllConfigs.server().andromeda.machineParallels.get()) Create.LOGGER.info("meow: " + getParallels());
 		boolean out = stressTooltip(tooltip);
 
 		if (AllConfigs.server().andromeda.machineParallels.get()) {
-			if (this instanceof MechanicalPressBlockEntity) {
-				addParallelStats(tooltip, getParallels());
+			if (this instanceof MechanicalPressBlockEntity ||
+				this instanceof MechanicalMixerBlockEntity) {
+				if (getParallels() > 1) {
+					addParallelStats(tooltip, getParallels());
+				}
 			}
 		}
 

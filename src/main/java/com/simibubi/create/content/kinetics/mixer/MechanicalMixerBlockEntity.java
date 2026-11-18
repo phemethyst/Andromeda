@@ -123,6 +123,23 @@ public class MechanicalMixerBlockEntity extends BasinOperatingBlockEntity {
 	}
 
 	@Override
+	public void onSpeedChanged(float previousSpeed) {
+		boolean fromOrToZero = (previousSpeed == 0) != (getSpeed() == 0);
+		boolean directionSwap = !fromOrToZero && Math.signum(previousSpeed) != Math.signum(getSpeed());
+		if (fromOrToZero || directionSwap)
+			flickerTally = getFlickerScore() + 5;
+
+		if (Mth.abs(getSpeed()) <= AllConfigs.server().andromeda.parallelCutoff.getF() || !AllConfigs.server().andromeda.machineParallels.get()) {
+			parallels = 1;
+		} else {
+			parallels = Mth.abs(Mth.floor(getSpeed() / (AllConfigs.server().andromeda.parallelCutoff.getF())))
+				* AllConfigs.server().andromeda.parallelMultiplier.get();
+		}
+
+		setChanged();
+	}
+
+	@Override
 	public void tick() {
 		super.tick();
 
@@ -173,7 +190,9 @@ public class MechanicalMixerBlockEntity extends BasinOperatingBlockEntity {
 					if (processingTicks == 0) {
 						runningTicks++;
 						processingTicks = -1;
-						applyBasinRecipe();
+						for (int i = 0; i < getParallels(); i++) {
+							applyBasinRecipe();
+						}
 						sendData();
 					}
 				}
