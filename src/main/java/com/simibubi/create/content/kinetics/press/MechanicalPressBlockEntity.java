@@ -91,7 +91,9 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 
 	@Override
 	public boolean tryProcessInBasin(boolean simulate) {
-		applyBasinRecipe();
+		for (int i = 0; i < getParallels(); i++) {
+			applyBasinRecipe();
+		}
 
 		Optional<BasinBlockEntity> basin = getBasin();
 		if (basin.isPresent()) {
