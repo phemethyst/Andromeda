@@ -10,6 +10,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.simibubi.create.foundation.codec.CreateCodecs;
 
+import com.simibubi.create.infrastructure.config.AllConfigs;
+
 import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -31,6 +33,8 @@ public class ProcessingRecipeParams {
 	protected int processingDuration;
 	protected HeatCondition requiredHeat;
 	protected int hits;
+	protected int minSpeed;
+	protected int maxSpeed;
 
 	protected ProcessingRecipeParams() {
 		ingredients = NonNullList.create();
@@ -40,6 +44,8 @@ public class ProcessingRecipeParams {
 		processingDuration = 0;
 		requiredHeat = HeatCondition.NONE;
 		hits = 1;
+		minSpeed = 1;
+		maxSpeed = 16384;
 	}
 
 	protected static <P extends ProcessingRecipeParams> MapCodec<P> codec(Supplier<P> factory) {
@@ -53,8 +59,12 @@ public class ProcessingRecipeParams {
 			HeatCondition.CODEC.optionalFieldOf("heat_requirement", HeatCondition.NONE)
 				.forGetter(ProcessingRecipeParams::requiredHeat),
 			Codec.INT.optionalFieldOf("hits", 1)
-				.forGetter(ProcessingRecipeParams::hits)
-		).apply(instance, (ingredients, results, processingDuration, requiredHeat, hits) -> {
+				.forGetter(ProcessingRecipeParams::hits),
+			Codec.INT.optionalFieldOf("minSpeed", 1)
+				.forGetter(ProcessingRecipeParams::minSpeed),
+			Codec.INT.optionalFieldOf("maxSpeed", 16384)
+				.forGetter(ProcessingRecipeParams::maxSpeed)
+		).apply(instance, (ingredients, results, processingDuration, requiredHeat, hits, minSpeed, maxSpeed) -> {
 			P params = factory.get();
 			ingredients.forEach(either -> either
 				.ifRight(params.ingredients::add)
@@ -65,6 +75,8 @@ public class ProcessingRecipeParams {
 			params.processingDuration = processingDuration;
 			params.requiredHeat = requiredHeat;
 			params.hits = hits;
+			params.minSpeed = minSpeed;
+			params.maxSpeed = maxSpeed;
 			return params;
 		}));
 	}
@@ -107,6 +119,14 @@ public class ProcessingRecipeParams {
 		return hits;
 	}
 
+	protected final int minSpeed() {
+		return minSpeed;
+	}
+
+	protected final int maxSpeed() {
+		return maxSpeed;
+	}
+
 	protected void encode(RegistryFriendlyByteBuf buffer) {
 		CatnipStreamCodecBuilders.nonNullList(Ingredient.CONTENTS_STREAM_CODEC).encode(buffer, ingredients);
 		CatnipStreamCodecBuilders.nonNullList(SizedFluidIngredient.STREAM_CODEC).encode(buffer, fluidIngredients);
@@ -115,6 +135,8 @@ public class ProcessingRecipeParams {
 		ByteBufCodecs.VAR_INT.encode(buffer, processingDuration);
 		HeatCondition.STREAM_CODEC.encode(buffer, requiredHeat);
 		ByteBufCodecs.VAR_INT.encode(buffer, hits);
+		ByteBufCodecs.VAR_INT.encode(buffer, minSpeed);
+		ByteBufCodecs.VAR_INT.encode(buffer, maxSpeed);
 	}
 
 	protected void decode(RegistryFriendlyByteBuf buffer) {
@@ -125,5 +147,7 @@ public class ProcessingRecipeParams {
 		processingDuration = ByteBufCodecs.VAR_INT.decode(buffer);
 		requiredHeat = HeatCondition.STREAM_CODEC.decode(buffer);
 		hits = ByteBufCodecs.VAR_INT.decode(buffer);
+		minSpeed = ByteBufCodecs.VAR_INT.decode(buffer);
+		maxSpeed = ByteBufCodecs.VAR_INT.decode(buffer);
 	}
 }

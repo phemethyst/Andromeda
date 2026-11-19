@@ -60,7 +60,8 @@ public final class CreateMixingRecipeGen extends MixingRecipeGen {
 	BRASS_INGOT = create("brass_ingot", b -> b.require(CreateRecipeProvider.I.copper())
 		.require(CreateRecipeProvider.I.zinc())
 		.output(AllItems.BRASS_INGOT.get(), 2)
-		.requiresHeat(HeatCondition.HEATED)),
+		.requiresHeat(HeatCondition.HEATED)
+		.minSpeed(256)),
 
 	ANDESITE_ALLOY = create("andesite_alloy", b -> b.require(Blocks.ANDESITE)
 		.require(CreateRecipeProvider.I.ironNugget())

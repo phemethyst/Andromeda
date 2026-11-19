@@ -14,5 +14,6 @@
       "count": 2,
       "id": "create:brass_ingot"
     }
-  ]
+  ],
+  "minSpeed": 256
 }

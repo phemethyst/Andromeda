@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.simibubi.create.AllItems;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.foundation.advancement.CreateAdvancement;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.simple.DeferralBehaviour;
@@ -20,6 +22,7 @@ import com.simibubi.create.infrastructure.config.AllConfigs;
 import net.createmod.catnip.lang.LangBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -108,7 +111,20 @@ public abstract class BasinOperatingBlockEntity extends KineticBlockEntity {
 		Optional<BasinBlockEntity> basin = getBasin();
 		if (!basin.isPresent())
 			return false;
-		return BasinRecipe.match(basin.get(), recipe);
+		return BasinRecipe.match(basin.get(), recipe) && matchSpeed(recipe);
+	}
+
+	protected boolean matchSpeed(Recipe<?> recipe) {
+		if (recipe instanceof BasinRecipe bRecipe) {
+			Create.LOGGER.info("Speed: " + Mth.abs(speed) + ", minimum: " + bRecipe.getMinSpeed() + ", maximum: " + bRecipe.getMaxSpeed());
+			if (Mth.abs(speed) >= bRecipe.getMinSpeed() && Mth.abs(speed) <= bRecipe.getMaxSpeed()) {
+				return true;
+			}
+
+			return false;
+		}
+
+		return false;
 	}
 
 	protected void applyBasinRecipe() {

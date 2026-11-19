@@ -222,6 +222,7 @@ public class BasinRecipe extends StandardProcessingRecipe<RecipeInput> {
 		return true;
 	}
 
+
 	@Override
 	public boolean matches(RecipeInput input, @NotNull Level worldIn) {
 		return false;

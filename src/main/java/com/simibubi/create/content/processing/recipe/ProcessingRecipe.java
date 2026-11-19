@@ -10,6 +10,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import com.google.common.base.Joiner;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
+import com.simibubi.create.Create;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -40,6 +41,8 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 	protected int processingDuration;
 	protected HeatCondition requiredHeat;
 	protected int hits;
+	protected int minSpeed;
+	protected int maxSpeed;
 
 	private RecipeType<?> type;
 	private RecipeSerializer<?> serializer;
@@ -55,6 +58,10 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 		this.processingDuration = params.processingDuration;
 		this.requiredHeat = params.requiredHeat;
 		this.hits = params.hits;
+		this.minSpeed = params.minSpeed;
+		this.maxSpeed = params.maxSpeed;
+
+		Create.LOGGER.info("mixer speed: " + minSpeed + " " + maxSpeed);
 
 		this.type = typeInfo.getType();
 		this.serializer = typeInfo.getSerializer();
@@ -77,6 +84,10 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 	}
 
 	protected boolean canSpecifyHits() {
+		return false;
+	}
+
+	protected boolean canSpecifySpeed() {
 		return false;
 	}
 
@@ -120,6 +131,9 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 
 		if (hits != 1 && !canSpecifyHits())
 			errors.add("Recipe specified an amount of hits. Hits are only for Mechanical Presses.");
+
+		if ((minSpeed != 1 || maxSpeed != 16384) && !canSpecifySpeed())
+			errors.add("Recipe specified a speed. Only certain machines accept this parameter.");
 
 		return errors;
 	}
@@ -180,6 +194,14 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 
 	public int getHits() {
 		return hits;
+	}
+
+	public int getMinSpeed() {
+		return minSpeed;
+	}
+
+	public int getMaxSpeed() {
+		return maxSpeed;
 	}
 
 	// IRecipe<> paperwork

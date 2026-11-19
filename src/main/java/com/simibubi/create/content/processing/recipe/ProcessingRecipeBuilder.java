@@ -217,6 +217,17 @@ public abstract class ProcessingRecipeBuilder<P extends ProcessingRecipeParams, 
 		return self();
 	}
 
+	public S minSpeed(int minSpeed) {
+		params.minSpeed = minSpeed;
+		Create.LOGGER.info("recipe is setting speed of " + minSpeed);
+		return self();
+	}
+
+	public S maxSpeed(int maxSpeed) {
+		params.maxSpeed = maxSpeed;
+		return self();
+	}
+
 	//
 
 	public S whenModLoaded(String modid) {
