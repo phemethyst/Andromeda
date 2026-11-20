@@ -5,7 +5,9 @@ import com.simibubi.create.compat.jei.category.animations.AnimatedMixer;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
 import com.simibubi.create.content.processing.recipe.HeatCondition;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -46,6 +48,16 @@ public class MixingCategory extends BasinCategory {
 			heater.withHeat(requiredHeat.visualizeAsBlazeBurner())
 				.draw(graphics, getBackground().getWidth() / 2 + 3, 55);
 		mixer.draw(graphics, getBackground().getWidth() / 2 + 3, 34);
+		if (recipe.getMinSpeed() != 1) {
+			graphics.drawString(Minecraft.getInstance().font, Component.literal(">").append(Component.literal(recipe.getMinSpeed() + " ")).append(Component.translatable("create.generic.unit.rpm")),
+				getBackground().getWidth() / 2 - 80,
+				5, 0xFFFFFF, false);
+		}
+		if (recipe.getMaxSpeed() != 16384) {
+			graphics.drawString(Minecraft.getInstance().font, Component.literal("<").append(Component.literal(recipe.getMaxSpeed() + " ")).append(Component.translatable("create.generic.unit.rpm")),
+				getBackground().getWidth() / 2 - 80,
+				15, 0xFFFFFF, false);
+		}
 	}
 
 }

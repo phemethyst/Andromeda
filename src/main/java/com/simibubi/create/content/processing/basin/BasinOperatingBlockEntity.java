@@ -1,6 +1,7 @@
 package com.simibubi.create.content.processing.basin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -90,8 +91,13 @@ public abstract class BasinOperatingBlockEntity extends KineticBlockEntity {
 		List<Recipe<?>> recipes = getMatchingRecipes();
 		if (recipes.isEmpty())
 			return true;
+
+		Create.LOGGER.info("meow: " + Arrays.toString(recipes.getFirst().getIngredients().getFirst().getItems()));
+
 		currentRecipe = recipes.get(0);
-		startProcessingBasin();
+		if (matchSpeed(currentRecipe)) {
+			startProcessingBasin();
+		}
 		sendData();
 		return true;
 	}
@@ -111,12 +117,11 @@ public abstract class BasinOperatingBlockEntity extends KineticBlockEntity {
 		Optional<BasinBlockEntity> basin = getBasin();
 		if (!basin.isPresent())
 			return false;
-		return BasinRecipe.match(basin.get(), recipe) && matchSpeed(recipe);
+		return BasinRecipe.match(basin.get(), recipe);
 	}
 
 	protected boolean matchSpeed(Recipe<?> recipe) {
 		if (recipe instanceof BasinRecipe bRecipe) {
-			Create.LOGGER.info("Speed: " + Mth.abs(speed) + ", minimum: " + bRecipe.getMinSpeed() + ", maximum: " + bRecipe.getMaxSpeed());
 			if (Mth.abs(speed) >= bRecipe.getMinSpeed() && Mth.abs(speed) <= bRecipe.getMaxSpeed()) {
 				return true;
 			}

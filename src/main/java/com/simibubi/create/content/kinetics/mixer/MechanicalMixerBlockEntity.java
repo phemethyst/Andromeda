@@ -1,15 +1,18 @@
 package com.simibubi.create.content.kinetics.mixer;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.AllSoundEvents;
+import com.simibubi.create.Create;
 import com.simibubi.create.content.fluids.FluidFX;
 import com.simibubi.create.content.fluids.potion.PotionMixingRecipes;
 import com.simibubi.create.content.kinetics.press.MechanicalPressBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinOperatingBlockEntity;
+import com.simibubi.create.content.processing.basin.BasinRecipe;
 import com.simibubi.create.content.processing.recipe.StandardProcessingRecipe;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.advancement.CreateAdvancement;
@@ -17,11 +20,15 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour.TankSegment;
 import com.simibubi.create.foundation.item.SmartInventory;
+import com.simibubi.create.foundation.item.TooltipHelper;
+import com.simibubi.create.foundation.utility.CreateLang;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 
 import net.createmod.catnip.animation.AnimationTickHolder;
 import net.createmod.catnip.data.Couple;
+import net.createmod.catnip.lang.FontHelper.Palette;
 import net.createmod.catnip.math.VecHelper;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.HolderLookup;
@@ -29,6 +36,8 @@ import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -46,6 +55,9 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
+
+import static net.minecraft.ChatFormatting.GOLD;
+import static net.minecraft.ChatFormatting.RED;
 
 public class MechanicalMixerBlockEntity extends BasinOperatingBlockEntity {
 
@@ -136,6 +148,7 @@ public class MechanicalMixerBlockEntity extends BasinOperatingBlockEntity {
 				* AllConfigs.server().andromeda.parallelMultiplier.get();
 		}
 
+		basinChecker.scheduleUpdate();
 		setChanged();
 	}
 
@@ -337,5 +350,4 @@ public class MechanicalMixerBlockEntity extends BasinOperatingBlockEntity {
 		if (runningTicks == 20)
 			AllSoundEvents.MIXING.playAt(level, worldPosition, .75f, 1, true);
 	}
-
 }
