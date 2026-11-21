@@ -1,0 +1,110 @@
+{
+  "variants": {
+    "face=ceiling,facing=east,lit=false": {
+      "model": "create:block/excessive_blasting_furnace",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,lit=true": {
+      "model": "create:block/excessive_blasting_furnace_on",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=north,lit=false": {
+      "model": "create:block/excessive_blasting_furnace",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=north,lit=true": {
+      "model": "create:block/excessive_blasting_furnace_on",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=south,lit=false": {
+      "model": "create:block/excessive_blasting_furnace",
+      "x": 90
+    },
+    "face=ceiling,facing=south,lit=true": {
+      "model": "create:block/excessive_blasting_furnace_on",
+      "x": 90
+    },
+    "face=ceiling,facing=west,lit=false": {
+      "model": "create:block/excessive_blasting_furnace",
+      "x": 90,
+      "y": 90
+    },
+    "face=ceiling,facing=west,lit=true": {
+      "model": "create:block/excessive_blasting_furnace_on",
+      "x": 90,
+      "y": 90
+    },
+    "face=floor,facing=east,lit=false": {
+      "model": "create:block/excessive_blasting_furnace",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,lit=true": {
+      "model": "create:block/excessive_blasting_furnace_on",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=north,lit=false": {
+      "model": "create:block/excessive_blasting_furnace",
+      "x": 270
+    },
+    "face=floor,facing=north,lit=true": {
+      "model": "create:block/excessive_blasting_furnace_on",
+      "x": 270
+    },
+    "face=floor,facing=south,lit=false": {
+      "model": "create:block/excessive_blasting_furnace",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,lit=true": {
+      "model": "create:block/excessive_blasting_furnace_on",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=west,lit=false": {
+      "model": "create:block/excessive_blasting_furnace",
+      "x": 270,
+      "y": 270
+    },
+    "face=floor,facing=west,lit=true": {
+      "model": "create:block/excessive_blasting_furnace_on",
+      "x": 270,
+      "y": 270
+    },
+    "face=wall,facing=east,lit=false": {
+      "model": "create:block/excessive_blasting_furnace",
+      "y": 90
+    },
+    "face=wall,facing=east,lit=true": {
+      "model": "create:block/excessive_blasting_furnace_on",
+      "y": 90
+    },
+    "face=wall,facing=north,lit=false": {
+      "model": "create:block/excessive_blasting_furnace"
+    },
+    "face=wall,facing=north,lit=true": {
+      "model": "create:block/excessive_blasting_furnace_on"
+    },
+    "face=wall,facing=south,lit=false": {
+      "model": "create:block/excessive_blasting_furnace",
+      "y": 180
+    },
+    "face=wall,facing=south,lit=true": {
+      "model": "create:block/excessive_blasting_furnace_on",
+      "y": 180
+    },
+    "face=wall,facing=west,lit=false": {
+      "model": "create:block/excessive_blasting_furnace",
+      "y": 270
+    },
+    "face=wall,facing=west,lit=true": {
+      "model": "create:block/excessive_blasting_furnace_on",
+      "y": 270
+    }
+  }
+}

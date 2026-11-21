@@ -163,6 +163,13 @@ public class AllShapes {
 			.add(1, 4, 5, 15, 12, 13)
 			.forHorizontal(SOUTH),
 
+		EXCESSIVE_BLASTING_FURNACE = shape(0, 0, 8, 16, 16, 16)
+			.forHorizontal(NORTH),
+			EXCESSIVE_BLASTING_FURNACE_CEILING = shape(0, 8, 0, 16, 16, 16)
+				.forHorizontal(NORTH),
+			EXCESSIVE_BLASTING_FURNACE_FLOOR = shape(0, 0, 0, 16, 8, 16)
+				.forHorizontal(NORTH),
+
 		PLACARD = shape(2, 0, 2, 14, 3, 14).forDirectional(UP),
 		FACTORY_PANEL_FALLBACK = shape(0, 0, 0, 16, 2, 16).forDirectional(UP),
 

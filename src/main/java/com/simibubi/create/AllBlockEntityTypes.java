@@ -76,6 +76,7 @@ import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltRenderer;
 import com.simibubi.create.content.kinetics.belt.BeltVisual;
+import com.simibubi.create.content.kinetics.blaster.ExcessiveBlastingFurnaceBlockEntity;
 import com.simibubi.create.content.kinetics.chainConveyor.ChainConveyorBlockEntity;
 import com.simibubi.create.content.kinetics.chainConveyor.ChainConveyorRenderer;
 import com.simibubi.create.content.kinetics.chainConveyor.ChainConveyorVisual;
@@ -237,6 +238,12 @@ import com.tterrag.registrate.util.entry.BlockEntityEntry;
 public class AllBlockEntityTypes {
 	private static final CreateRegistrate REGISTRATE = Create.registrate();
 
+	// ANDROMEDA
+	public static final BlockEntityEntry<ExcessiveBlastingFurnaceBlockEntity> EXCESSIVE_BLASTING_FURNACE = REGISTRATE
+		.blockEntity("excessive_blasting_furnace", ExcessiveBlastingFurnaceBlockEntity::new)
+		.validBlocks(AllBlocks.EXCESSIVE_BLASTING_FURNACE)
+		.register();
+
 	// Schematics
 	public static final BlockEntityEntry<SchematicannonBlockEntity> SCHEMATICANNON = REGISTRATE
 		.blockEntity("schematicannon", SchematicannonBlockEntity::new)
@@ -341,7 +348,7 @@ public class AllBlockEntityTypes {
 		.validBlocks(AllBlocks.HAND_CRANK)
 		.renderer(() -> HandCrankRenderer::new)
 		.register();
-	
+
 	public static final BlockEntityEntry<ValveHandleBlockEntity> VALVE_HANDLE = REGISTRATE
 		.blockEntity("valve_handle", ValveHandleBlockEntity::new)
 		.visual(() -> ValveHandleVisual::new)
@@ -794,7 +801,7 @@ public class AllBlockEntityTypes {
 		.validBlocks(AllBlocks.ANALOG_LEVER)
 		.renderer(() -> AnalogLeverRenderer::new)
 		.register();
-	
+
 	public static final BlockEntityEntry<PlacardBlockEntity> PLACARD = REGISTRATE
 		.blockEntity("placard", PlacardBlockEntity::new)
 		.validBlocks(AllBlocks.PLACARD)
@@ -940,7 +947,7 @@ public class AllBlockEntityTypes {
 		.validBlocksDeferred(TrackMaterial::allBlocks)
 		.renderer(() -> TrackRenderer::new)
 		.register();
-	
+
 	public static final BlockEntityEntry<FakeTrackBlockEntity> FAKE_TRACK = REGISTRATE
 		.blockEntity("fake_track", FakeTrackBlockEntity::new)
 		.validBlocks(AllBlocks.FAKE_TRACK)
@@ -991,7 +998,7 @@ public class AllBlockEntityTypes {
 		.renderer(() -> TrackObserverRenderer::new)
 		.validBlocks(AllBlocks.TRACK_OBSERVER)
 		.register();
-	
+
 	public static final BlockEntityEntry<ClipboardBlockEntity> CLIPBOARD = REGISTRATE
 		.blockEntity("clipboard", ClipboardBlockEntity::new)
 		.validBlocks(AllBlocks.CLIPBOARD)

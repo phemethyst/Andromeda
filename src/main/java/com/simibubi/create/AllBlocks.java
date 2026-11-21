@@ -114,6 +114,7 @@ import com.simibubi.create.content.fluids.tank.FluidTankMovementBehavior;
 import com.simibubi.create.content.kinetics.belt.BeltBlock;
 import com.simibubi.create.content.kinetics.belt.BeltGenerator;
 import com.simibubi.create.content.kinetics.belt.BeltModel;
+import com.simibubi.create.content.kinetics.blaster.ExcessiveBlastingFurnaceBlock;
 import com.simibubi.create.content.kinetics.chainConveyor.ChainConveyorBlock;
 import com.simibubi.create.content.kinetics.chainDrive.ChainDriveBlock;
 import com.simibubi.create.content.kinetics.chainDrive.ChainDriveGenerator;
@@ -330,6 +331,17 @@ public class AllBlocks {
 	static {
 		REGISTRATE.setCreativeTab(AllCreativeModeTabs.BASE_CREATIVE_TAB);
 	}
+
+	// ANDROMEDA
+
+	public static final BlockEntry<ExcessiveBlastingFurnaceBlock> EXCESSIVE_BLASTING_FURNACE =
+		REGISTRATE.block("excessive_blasting_furnace", ExcessiveBlastingFurnaceBlock::new)
+			.initialProperties(() -> Blocks.IRON_BLOCK)
+			.transform(axeOrPickaxe())
+			.blockstate((ctx, prov) -> prov.horizontalBlock(ctx.getEntry(), prov.models()
+				.getExistingFile(ctx.getId()), 0))
+			.simpleItem()
+			.register();
 
 	// Schematics
 
